@@ -29,18 +29,23 @@ typedef void* voidptr;
 #define Truse  ((boolean)-1)
 #define null    ((void*)0)
 
-#ifndef ArenaAlloc
-voidptr malloc(usize size);
-#define ArenaAlloc malloc
-#endif
-
-#ifndef ArenaFree
-void free(voidptr ptr);
-#define ArenaFree free
-#endif
-
 #define fn(type, name)          type (*name)
 #define cast(type, expr)        ((type)expr)
 #define transmute(type, expr)   (*(type*)expr)
+
+#ifndef Arena_Alloc
+voidptr malloc(usize size);
+#define Arena_Alloc malloc
+#endif
+
+#ifndef Arena_Free
+void free(voidptr ptr);
+#define Arena_Free free
+#endif
+
+#ifndef Arena_Sort
+#define Arena_Sort qsort
+void qsort(voidptr base, usize nmemb, usize size, fn(i32, compare)(const voidptr a, const voidptr b));
+#endif
 
 #endif
