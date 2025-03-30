@@ -29,7 +29,7 @@ isize  string_find(string s, string sub);
 string string_sort(string s);
 
 cstr   string_cstr(string s);
-i16    string_at(string s, usize index);
+i16    string_at(string s, isize index);
 
 string string_upper(string s);
 string string_lower(string s);
@@ -64,7 +64,7 @@ boolean string_eq(string s, string a);
 #endif
 
 inline string string_new(usize len) {
-    return (string){.str = ((cstr)ArenaAlloc(len + 1)), .len = len, .is = True};
+    return (string){.str = ((cstr)Arena_Alloc(len + 1)), .len = len, .is = True};
 }
 
 string string_from(cstr str) {
@@ -79,13 +79,12 @@ inline usize string_len(string s) {
 
 void string_free(string s) {
     if (s.is == True) {
-        ArenaFree(s.str);
-        s.str = cast(cstr, 0);
+        Arena_Free(s.str);
+        s.str = null;
         s.len = 0;
     }
     s.is = False;
 }
-
 
 string string_clone(string s) {
 	if (s.len == 0) return SLIT("");
@@ -128,13 +127,13 @@ string string_concat(string s, string a) {
     
     usize j = 0;
     for (; j < a.len; j++) {
-        s.str[i + j] = a.str[j];
+        s1.str[i + j] = a.str[j];
     }
     
-    s.str[i+j] = 0;
+    s1.str[i+j] = 0;
     }
 
-    return s;
+    return s1;
 }
 
 string string_repeat(string s, usize count) {
@@ -179,6 +178,7 @@ string string_cut(string s, usize from, usize to) {
 }
 
 usize string_count(string s, string sub) {
+    if (s.len == 0 && sub.len == 0) return 1;
     if (s.len == 0 || sub.len == 0 || sub.len > s.len) return 0;
 
     usize count = 0;
@@ -214,11 +214,6 @@ isize string_find(string s, string sub) {
     return index;
 }
 
-#ifndef ArenaQsort
-#define ArenaQsort qsort
-void qsort(voidptr base, usize nmemb, usize size, fn(i32, compare)(const voidptr a, const voidptr b));
-#endif
-
 #ifndef string_sort_method
 #define string_sort_method __string_default_sort_method
 i32 __string_default_sort_method(const voidptr a, const voidptr b) {
@@ -234,7 +229,7 @@ i32 __string_default_sort_method(const voidptr a, const voidptr b) {
 
 string string_sort(string s) {
     string s1 = string_clone(s);
-    ArenaQsort(s1.str, s1.len, sizeof(char), string_sort_method);
+    Arena_Sort(s1.str, s1.len, sizeof(char), string_sort_method);
     return s1;
 }
 
@@ -243,8 +238,9 @@ cstr string_cstr(string s) {
     return s1.str;
 }
 
-inline i16 string_at(string s, usize index) {
-    return s.str[index];
+//TODO: //handle out of bounds
+inline i16 string_at(string s, isize index) {
+    return s.str[index < 0 ? (s.len + index) : index];
 }
 
 string string_upper(string s) {
@@ -442,7 +438,7 @@ boolean string_isidentifier(string s) {
 }
 
 boolean string_compare(string s, string a) {
-	int min_len = (s.len < a.len ? (s.len) : (a.len));
+	usize min_len = (s.len < a.len ? (s.len) : (a.len));
 
     {
     usize i;
