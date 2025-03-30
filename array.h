@@ -17,12 +17,13 @@ array array_new(usize elemsize, usize cap);
 usize array_len(array a);
 void array_free(array a);
 array array_clone(array a);
+array array_clear(array a);
 
 #ifdef ARENA_ARRAY_USE
 
 inline array array_new(usize elemsize, usize cap) {
     return (array){
-        .data = ArenaAlloc(elemsize * cap),
+        .data = Arena_Alloc(elemsize * cap),
         .len = 0,
         .cap  = cap,
         .esize = elemsize,
@@ -36,7 +37,7 @@ inline usize array_len(array a) {
 
 void array_free(array a) {
     if (a.is == True) {
-        ArenaFree(a.data);
+        Arena_Free(a.data);
         a.data = null;
         a.len = 0;
         a.cap = 0;
@@ -50,7 +51,6 @@ array array_clone(array a) {
     return a1;
 }
 
-array array_clear(array a);
 inline array array_clear(array a) {
     return array_new(a.esize, a.cap);
 }
