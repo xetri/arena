@@ -13,6 +13,14 @@ struct array {
     boolean is;
 };
 
+#define Array(typ, ...) ((array) { \
+    .data = (typ[]) {__VA_ARGS__}, \
+    .len = sizeof((typ[]) {__VA_ARGS__}) / sizeof(typ), \
+    .cap = sizeof((typ[]) {__VA_ARGS__}) / sizeof(typ), \
+    .esize = sizeof(typ), \
+    .is = False \
+})
+
 array array_new(usize elemsize, usize cap);
 usize array_len(array a);
 void array_free(array a);
