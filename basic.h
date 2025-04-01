@@ -27,7 +27,7 @@ typedef void* voidptr;
 #define True    ((boolean)1)
 #define False   ((boolean)0)
 #define Truse  ((boolean)-1)
-#define null    ((void*)0)
+#define null    0
 
 #define fn(type, name)          type (*name)
 #define cast(type, expr)        ((type)expr)
