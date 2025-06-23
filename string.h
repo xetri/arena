@@ -11,45 +11,6 @@ struct string {
     cstr str;
     i32 len;
     boolean is;
-
-    //Reason: Took extra more memory of (304 - 16) bytes
-    /* string (*from)(cstr); */
-    /* void   (*free)(string); */
-    /* string (*clone)(string); */
-    /* string (*reverse)(string); */
-    /* string (*append)(string, string); */
-    /* string (*repeat)(string, i32); */
-    /* string (*slice)(string, i32, i32); */
-    /* i32    (*count)(string, string); */
-    /* i32    (*find)(string, string); */
-    /* i32    (*findAt)(string, string, i32); */
-    /* string (*replace)(string, string, string); */
-    /* string (*replaceAll)(string, string, string); */
-    /* string (*replaceAt)(string, string, string, i32); */
-    /* string (*sort)(string); */
-    /* i8     (*at)(string, i32); */
-    /* string (*upper)(string); */
-    /* string (*lower)(string); */
-    /* string (*capitalize)(string); */
-    /* string (*swapcase)(string); */
-    /* string (*trim)(string); */
-    /* string (*ltrim)(string); */
-    /* string (*rtrim)(string); */
-    /*  */
-    /* boolean (*starts)(string, string); */
-    /* boolean (*ends)(string, string); */
-    /* boolean (*has)(string, string); */
-    /* boolean (*isspace)(string); */
-    /* boolean (*isalpha)(string); */
-    /* boolean (*isnum)(string); */
-    /* boolean (*isalphanum)(string); */
-    /* boolean (*isidentifier)(string); */
-    /* boolean (*cmp)(string, string); */
-    /* boolean (*lt)(string, string); */
-    /* boolean (*gt)(string, string); */
-    /* boolean (*lte)(string, string); */
-    /* boolean (*gte)(string, string); */
-    /* boolean (*eq)(string, string); */
 };
 
 #define __ARENA_STRING_DEFINE(_str, _len, _is) ((string){ \
@@ -57,46 +18,8 @@ struct string {
     .len = _len, \
     .is = _is, \
     })
-    /* .from = string_from, \ */
-    /* .free = string_free, \ */
-    /* .clone = string_clone, \ */
-    /* .reverse = string_reverse, \ */
-    /* .append = string_append, \ */
-    /* .repeat = string_repeat, \ */
-    /* .slice = string_slice, \ */
-    /* .count = string_count, \ */
-    /* .find = string_find, \ */
-    /* .findAt = string_findAt, \ */
-    /* .replace = string_replace, \ */
-    /* .replaceAll = string_replaceAll, \ */
-    /* .replaceAt = string_replaceAt, \ */
-    /* .sort = string_sort, \ */
-    /* .at = string_at, \ */
-    /* .upper = string_upper, \ */
-    /* .lower = string_lower, \ */
-    /* .capitalize = string_capitalize, \ */
-    /* .swapcase = string_swapcase, \ */
-    /* .trim = string_trim, \ */
-    /* .ltrim = string_ltrim, \ */
-    /* .rtrim = string_rtrim, \ */
-    /* .starts = string_starts, \ */
-    /* .ends = string_ends, \ */
-    /* .has = string_has, \ */
-    /* .isspace = string_isspace, \ */
-    /* .isalpha = string_isalpha, \ */
-    /* .isnum = string_isnum, \ */
-    /* .isalphanum = string_isalphanum, \ */
-    /* .isidentifier = string_isidentifier, \ */
-    /* .cmp = string_cmp, \ */
-    /* .lt = string_lt, \ */
-    /* .gt = string_gt, \ */
-    /* .lte = string_lte, \ */
-    /* .gte = string_gte, \ */
-    /* .eq = string_eq, \ */
-/* }) */
 
 #define SLIT(lit) __ARENA_STRING_DEFINE(lit, (sizeof(lit) - 1), False)
-/* #define Str() SLIT("") */
 #define String(s) string_from(s)
 
 string string_new(i32 len);
@@ -172,7 +95,7 @@ string string_from(cstr str) {
 
 void string_free(string s) {
     if (s.is == True) {
-        Arena_Free(s.str);
+        if (s.str) Arena_Free(s.str);
         s.str = "";
         s.len = 0;
         s.is = False;
