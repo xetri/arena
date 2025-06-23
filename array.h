@@ -21,15 +21,15 @@ struct array {
     .is = False \
 })
 
-array array_new(usize elemsize, usize cap);
+array array_new(i32 elemsize, i32 cap);
 usize array_len(array a);
 void array_free(array a);
 array array_clone(array a);
-array array_clear(array a);
+void array_clear(array* a);
 
 #ifdef ARENA_ARRAY_USE
 
-inline array array_new(usize elemsize, usize cap) {
+inline array array_new(i32 elemsize, i32 cap) {
     return (array){
         .data = Arena_Alloc(elemsize * cap),
         .len = 0,
@@ -45,22 +45,32 @@ inline usize array_len(array a) {
 
 void array_free(array a) {
     if (a.is == True) {
-        Arena_Free(a.data);
+        if (a.data) Arena_Free(a.data);
         a.data = null;
         a.len = 0;
         a.cap = 0;
+        a.is = False;
     }
-    a.is = False;
 }
 
 array array_clone(array a) {
     array a1 = array_new(a.esize, a.cap);
-    a1.data = a.data;
+    a1.len = a.len;
+
+    u8* src = cast(u8*, a.data);
+    u8* dst = cast(u8*, a1.data);
+
+    for (usize i = 0; i < a.len * a.esize; i++) {
+        dst[i] = src[i];
+    }
+
     return a1;
 }
 
-inline array array_clear(array a) {
-    return array_new(a.esize, a.cap);
+inline void array_clear(array* a) {
+    array a1 = array_new(a->esize, a->cap);
+    array_free(*a);
+    *a = a1;
 }
 
 array array_append(array a, voidptr elem);
