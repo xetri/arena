@@ -45,7 +45,7 @@ void free(voidptr ptr);
 
 #ifndef Arena_Sort
 #define Arena_Sort qsort
-void qsort(voidptr base, usize nmemb, usize size, fn(i32, compare)(const voidptr a, const voidptr b));
+void qsort(voidptr base, i32 nmemb, i32 size, fn(i32, compare)(const voidptr a, const voidptr b));
 #endif
 
 #endif
